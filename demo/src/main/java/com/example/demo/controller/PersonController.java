@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.algorithm.BFS;
 import com.example.demo.algorithm.Dijkstra;
 import com.example.demo.algorithm.QuickSort;
-import com.example.demo.domain.ConnectionProjection; // <-- IMPORTAR EL NUEVO DTO
+import com.example.demo.domain.ConnectionProjection; 
 import com.example.demo.domain.PersonEntity;
 import com.example.demo.graph.Graph;
 import com.example.demo.repository.PersonRepository;
@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/people")
@@ -28,15 +29,11 @@ public class PersonController {
 
     private Mono<Graph> buildGraph() {
         Mono<List<PersonEntity>> peopleMono = repository.findAllPeople().collectList();
-        
-        // <-- CORREGIDO: Usar el nuevo tipo de retorno del repositorio
         Mono<List<ConnectionProjection>> edgesMono = repository.findAllConnections().collectList();
 
         return Mono.zip(peopleMono, edgesMono)
                 .map(tuple -> {
                     List<PersonEntity> people = tuple.getT1();
-                    
-                    // <-- CORREGIDO: La lista ahora es de ConnectionProjection
                     List<ConnectionProjection> edges = tuple.getT2();
 
                     Graph g = new Graph();
@@ -44,9 +41,7 @@ public class PersonController {
                         g.addNode(p.getName());
                     }
 
-                    // <-- CORREGIDO: Iterar sobre el DTO
                     for (ConnectionProjection edge : edges) {
-                        // Usamos los métodos de acceso del record (.from(), .to(), .weight())
                         String from = edge.from(); 
                         String to = edge.to();
                         Double weight = edge.weight();
@@ -58,18 +53,19 @@ public class PersonController {
                 });
     }
 
-    // ... El resto de los endpoints (getSortedPeople, getShortestPath, etc.)
-    // ... no necesitan cambios.
-    
     @GetMapping("/sorted")
-    public Mono<List<PersonEntity>> getSortedPeople() {
+    public Mono<List<String>> getSortedPeople() {
         return repository.findAllPeople()
                 .collectList()
                 .flatMap(people -> Mono.fromRunnable(() -> {
                             QuickSort.sort(people);
                         })
                         .subscribeOn(Schedulers.boundedElastic())
-                        .thenReturn(people)
+                        .thenReturn(people) 
+                )
+                .map(sortedPeople -> sortedPeople.stream()
+                                        .map(PersonEntity::getName)
+                                        .collect(Collectors.toList())
                 );
     }
 
@@ -80,6 +76,8 @@ public class PersonController {
     ) {
         return buildGraph()
                 .flatMap(graph -> Mono.fromCallable(() -> {
+                            // <-- ¡AQUÍ ESTÁ LA CORRECCIÓN!
+                            // El nombre del método es findShortestPath
                             return Dijkstra.findShortestPath(graph, name1, name2);
                         })
                         .subscribeOn(Schedulers.boundedElastic())
@@ -106,7 +104,6 @@ public class PersonController {
                 );
     }
 }
-
 
 
 
