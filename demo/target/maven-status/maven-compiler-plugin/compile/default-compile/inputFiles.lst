@@ -1,4 +1,5 @@
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/controller/MovieController.java
+/workspaces/TP_Progra3/demo/src/main/java/com/example/demo/algorithm/BranchAndBound.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/domain/ConnectionProjection.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/config/Neo4jConfig.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/TpoApplication.java

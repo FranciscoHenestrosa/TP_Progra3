@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.algorithm.BranchAndBound;
 import com.example.demo.algorithm.DynamicProgramming;
 import com.example.demo.algorithm.BacktrackingDFS; 
 import com.example.demo.algorithm.BFS;
@@ -138,6 +139,19 @@ public class PersonController {
                             return DynamicProgramming.solveKnapsack(people, maxCost);
                         })
                         .subscribeOn(Schedulers.boundedElastic()) // 3. En un hilo separado
+                );
+    }
+
+    @GetMapping("/branch-and-bound")
+    public Mono<Map<String, Object>> getBranchAndBoundSolution(
+            @RequestParam int maxCost
+    ) {
+        return repository.findAllPeople().collectList()
+                .flatMap(people -> Mono.fromCallable(() -> {
+                            // 1. Llama al nuevo algoritmo
+                            return BranchAndBound.solveKnapsack(people, maxCost);
+                        })
+                        .subscribeOn(Schedulers.boundedElastic()) // 2. En un hilo separado
                 );
     }
 }
