@@ -11,9 +11,9 @@ import java.util.Set;
 public class PersonEntity {
 
     @Id
-    private final String name;
+    private String name; // <-- Quitamos final
 
-    private final Integer born;
+    private Integer born; // <-- Quitamos final
 
     @Relationship(type = "ACTED_IN")
     private Set<MovieEntity> movies = new HashSet<>();
@@ -21,10 +21,22 @@ public class PersonEntity {
     @Relationship(type = "CO_ACTED_WITH")
     private Set<PersonEntity> coActors = new HashSet<>();
 
+    /**
+     * Constructor vacío que Spring Data necesita para instanciar la clase
+     * antes de "llenar" los campos.
+     */
+    public PersonEntity() {
+    }
+
+    /**
+     * Dejamos el constructor que usas para crear instancias
+     */
     public PersonEntity(String name, Integer born) {
         this.name = name;
         this.born = born;
     }
+    
+    // --- Getters ---
 
     public String getName() {
         return name;
@@ -40,6 +52,24 @@ public class PersonEntity {
 
     public Set<PersonEntity> getCoActors() {
         return coActors;
+    }
+
+    // --- Setters (Para que Spring Data pueda "llenar" la entidad) ---
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBorn(Integer born) {
+        this.born = born;
+    }
+
+    public void setMovies(Set<MovieEntity> movies) {
+        this.movies = movies;
+    }
+
+    public void setCoActors(Set<PersonEntity> coActors) {
+        this.coActors = coActors;
     }
 }
 

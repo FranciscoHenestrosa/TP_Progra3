@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.algorithm.DynamicProgramming;
 import com.example.demo.algorithm.BacktrackingDFS; 
 import com.example.demo.algorithm.BFS;
 import com.example.demo.algorithm.Dijkstra;
@@ -123,6 +124,20 @@ public class PersonController {
                             return result;
                         })
                         .subscribeOn(Schedulers.boundedElastic()) // 3. Lo ejecuta en un hilo separado
+                );
+    }
+
+    @GetMapping("/knapsack")
+    public Mono<Map<String, Object>> getKnapsackSolution(
+            @RequestParam int maxCost // Ej. maxCost=150
+    ) {
+        // 1. Obtenemos la lista de todas las personas (con sus relaciones cargadas)
+        return repository.findAllPeople().collectList()
+                .flatMap(people -> Mono.fromCallable(() -> {
+                            // 2. Ejecutamos el algoritmo bloqueante de PD
+                            return DynamicProgramming.solveKnapsack(people, maxCost);
+                        })
+                        .subscribeOn(Schedulers.boundedElastic()) // 3. En un hilo separado
                 );
     }
 }

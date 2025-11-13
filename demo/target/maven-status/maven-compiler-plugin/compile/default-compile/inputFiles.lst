@@ -2,6 +2,7 @@
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/domain/ConnectionProjection.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/config/Neo4jConfig.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/TpoApplication.java
+/workspaces/TP_Progra3/demo/src/main/java/com/example/demo/algorithm/DynamicProgramming.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/domain/MovieEntity.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/repository/PersonRepository.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/algorithm/BFS.java
@@ -9,5 +10,6 @@
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/algorithm/QuickSort.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/domain/PersonEntity.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/Graph/Graph.java
+/workspaces/TP_Progra3/demo/src/main/java/com/example/demo/algorithm/BacktrackingDFS.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/controller/PersonController.java
 /workspaces/TP_Progra3/demo/src/main/java/com/example/demo/repository/MovieRepository.java

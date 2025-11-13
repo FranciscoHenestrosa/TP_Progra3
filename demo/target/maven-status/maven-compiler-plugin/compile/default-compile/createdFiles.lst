@@ -1,4 +1,5 @@
 com/example/demo/TpoApplication.class
+com/example/demo/algorithm/DynamicProgramming.class
 com/example/demo/domain/PersonEntity.class
 com/example/demo/algorithm/QuickSort.class
 com/example/demo/algorithm/Dijkstra.class
@@ -6,6 +7,7 @@ com/example/demo/domain/ConnectionProjection.class
 com/example/demo/repository/MovieRepository.class
 com/example/demo/repository/PersonRepository.class
 com/example/demo/controller/PersonController.class
+com/example/demo/algorithm/BacktrackingDFS.class
 com/example/demo/Neo4jConfig.class
 com/example/demo/graph/Graph.class
 com/example/demo/algorithm/BFS.class
