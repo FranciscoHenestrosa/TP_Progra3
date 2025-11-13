@@ -6,8 +6,7 @@ import java.util.*;
 public class BFS {
 
     /**
-     * Encuentra todos los nodos (personas) alcanzables desde un nodo de inicio
-     * dentro de un número específico de "grados" o "saltos".
+     * Encuentra todos los nodos alcanzables desde un nodo de inicio dentro de un número específico de saltos.
      */
     public static Set<String> findNeighborsWithinDegrees(Graph graph, String startNode, int degrees) {
         Set<String> neighborsFound = new HashSet<>();

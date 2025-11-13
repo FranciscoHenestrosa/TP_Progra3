@@ -1,9 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.algorithm.BacktrackingDFS; 
 import com.example.demo.algorithm.BFS;
 import com.example.demo.algorithm.Dijkstra;
 import com.example.demo.algorithm.QuickSort;
-import com.example.demo.domain.ConnectionProjection; 
+import com.example.demo.domain.ConnectionProjection;
 import com.example.demo.domain.PersonEntity;
 import com.example.demo.graph.Graph;
 import com.example.demo.repository.PersonRepository;
@@ -42,10 +43,10 @@ public class PersonController {
                     }
 
                     for (ConnectionProjection edge : edges) {
-                        String from = edge.from(); 
+                        String from = edge.from();
                         String to = edge.to();
                         Double weight = edge.weight();
-                        
+
                         if (weight == null) weight = 1.0;
                         g.addEdge(from, to, weight);
                     }
@@ -61,11 +62,11 @@ public class PersonController {
                             QuickSort.sort(people);
                         })
                         .subscribeOn(Schedulers.boundedElastic())
-                        .thenReturn(people) 
+                        .thenReturn(people)
                 )
                 .map(sortedPeople -> sortedPeople.stream()
-                                        .map(PersonEntity::getName)
-                                        .collect(Collectors.toList())
+                        .map(PersonEntity::getName)
+                        .collect(Collectors.toList())
                 );
     }
 
@@ -76,8 +77,6 @@ public class PersonController {
     ) {
         return buildGraph()
                 .flatMap(graph -> Mono.fromCallable(() -> {
-                            // <-- ¡AQUÍ ESTÁ LA CORRECCIÓN!
-                            // El nombre del método es findShortestPath
                             return Dijkstra.findShortestPath(graph, name1, name2);
                         })
                         .subscribeOn(Schedulers.boundedElastic())
@@ -92,7 +91,7 @@ public class PersonController {
         return buildGraph()
                 .flatMap(graph -> Mono.fromCallable(() -> {
                             Set<String> neighbors = BFS.findNeighborsWithinDegrees(graph, name, degrees);
-                            
+
                             Map<String, Object> result = new HashMap<>();
                             result.put("actor", name);
                             result.put("degrees", degrees);
@@ -103,7 +102,27 @@ public class PersonController {
                         .subscribeOn(Schedulers.boundedElastic())
                 );
     }
+
+    
+    @GetMapping("/all-paths")
+    public Mono<Map<String, Object>> getAllPaths(
+            @RequestParam String name1,
+            @RequestParam String name2
+    ) {
+        return buildGraph()
+                .flatMap(graph -> Mono.fromCallable(() -> {
+                            // 1. Llama al algoritmo bloqueante
+                            List<List<String>> paths = BacktrackingDFS.findAllPaths(graph, name1, name2);
+
+                            // 2. Prepara la respuesta
+                            Map<String, Object> result = new HashMap<>();
+                            result.put("from", name1);
+                            result.put("to", name2);
+                            result.put("pathCount", paths.size());
+                            result.put("paths", paths);
+                            return result;
+                        })
+                        .subscribeOn(Schedulers.boundedElastic()) // 3. Lo ejecuta en un hilo separado
+                );
+    }
 }
-
-
-

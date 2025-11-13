@@ -41,7 +41,7 @@ public class Dijkstra {
                 if (alt < distances.get(neighbor.getKey())) {
                     distances.put(neighbor.getKey(), alt);
                     previous.put(neighbor.getKey(), current);
-                    queue.add(neighbor.getKey()); // Simplemente añadimos
+                    queue.add(neighbor.getKey()); 
                 }
             }
         }
