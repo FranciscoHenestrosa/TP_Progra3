@@ -8,20 +8,17 @@ import java.util.Set;
 
 public class BacktrackingDFS {
 
-    /**
-     * 
-     *
-     * @param graph grafo a recorrer.
-     * @param start nodo inicial (actor).
-     * @param end nodo final (actor).
-     * @return lista de TODOS los caminos encontrados. Cada camino es una lista de nombres.
-     */
+    @param graph //grafo a recorrer
+    @param start //nodo inicial 
+    @param end //nodo final
+    @return //lista de TODOS los caminos encontrados. Cada camino es una lista de nombres
+     
     public static List<List<String>> findAllPaths(Graph graph, String start, String end) {
         List<List<String>> allPaths = new ArrayList<>();
         Set<String> visited = new HashSet<>();
         List<String> currentPath = new ArrayList<>();
 
-        // Inicia proceso recursivo de backtracking
+        // Inicia backtracking
         dfs(graph, start, end, visited, currentPath, allPaths);
         
         return allPaths;
@@ -36,26 +33,26 @@ public class BacktrackingDFS {
             List<String> currentPath,
             List<List<String>> allPaths
     ) {
-        // 1. MARCAR la visita (elegir)
+        
         visited.add(current);
         currentPath.add(current);
 
-        // 2. CASO BASE (Solución encontrada)
+        // 2. caso base,solucion encontrada
         if (current.equals(end)) {
-            // Encontramos un camino. Añadimos una COPIA del camino actual a los resultados.
+            // se encuentra un camino, añade una copia del camino actual a los resultados
             allPaths.add(new ArrayList<>(currentPath));
         } 
-        // 3. PASO RECURSIVO (Explorar)
+        // 3. paso recursivo, explorar
         else {
             for (String neighbor : graph.getNeighbors(current).keySet()) {
-                // Solo explorar si NO hemos visitado a este vecino EN ESTE CAMINO
+                // Solo explorar si no hemos visitado a este vecino en este camino
                 if (!visited.contains(neighbor)) {
                     dfs(graph, neighbor, end, visited, currentPath, allPaths);
                 }
             }
         }
 
-        // 4. BACKTRACK (Deshacer la elección)
+        // 4. backtrack, deshace la eleccion
         currentPath.remove(currentPath.size() - 1);
         visited.remove(current);
     }

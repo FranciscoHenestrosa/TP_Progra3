@@ -8,13 +8,11 @@ import java.util.Map;
 
 public class DynamicProgramming {
 
-    /**
-     * Resuelve el problema de la mochila 0/1 (Knapsack).
-     *
-     * @param people La lista de todos los actores (los "ítems").
-     * @param maxCost El presupuesto máximo (la "capacidad" de la mochila).
-     * @return Un Map con el valor total y la lista de actores seleccionados.
-     */
+ 
+    @param people //lista de todos los actores 
+    @param maxCost //El presupuesto máximo (la "capacidad" de la mochila).
+    @return //Un Map con el valor total y la lista de actores seleccionados.
+
     public static Map<String, Object> solveKnapsack(List<PersonEntity> people, int maxCost) {
         
         int n = people.size();
@@ -24,19 +22,19 @@ public class DynamicProgramming {
         int[] costs = new int[n];
         String[] names = new String[n];
 
-        // Extraemos los datos de las entidades
+        // Extrae los datos de las entidades
         for (int i = 0; i < n; i++) {
             PersonEntity p = people.get(i);
             names[i] = p.getName();
             
-            // "Valor" = N° de Películas + N° de Co-Actores (su "importancia")
+            // Valor = numero de Películas + numero de Co-Actores 
             values[i] = p.getMovies().size() + p.getCoActors().size();
             
-            // "Costo" = Año de nacimiento (ej. 1964 -> 64)
+            // Costo = año de nacimiento, por ej: 1964 -> 64
             costs[i] = (p.getBorn() != null ? p.getBorn() % 100 : 50); // Usamos 50 como default
         }
 
-        // --- Inicio del Algoritmo de Programación Dinámica ---
+        // Inicio del Algoritmo de Programación Dinámica 
 
         // dp[i][c] = máximo valor que podemos obtener usando los primeros 'i' ítems
         // con un costo (presupuesto) máximo de 'c'.
@@ -66,7 +64,7 @@ public class DynamicProgramming {
             }
         }
 
-        // --- Fin del Algoritmo ---
+        // termina el Algoritmo 
 
         // El valor máximo está en la última celda de la tabla
         int maxValue = dp[n][maxCost];
@@ -75,8 +73,7 @@ public class DynamicProgramming {
         List<String> selectedActors = new ArrayList<>();
         int c = maxCost;
         for (int i = n; i > 0 && maxValue > 0; i--) {
-            // Si el valor es diferente al de la fila anterior,
-            // significa que SÍ incluimos este ítem.
+            // Si el valor es diferente al de la fila anterior, significa que si incluimos este ítem.
             if (dp[i][c] != dp[i - 1][c]) {
                 int currentItemIndex = i - 1;
                 selectedActors.add(names[currentItemIndex]);

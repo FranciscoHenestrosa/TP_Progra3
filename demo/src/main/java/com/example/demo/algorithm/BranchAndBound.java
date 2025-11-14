@@ -12,15 +12,14 @@ import java.util.PriorityQueue;
 
 public class BranchAndBound {
 
-    /**
-     * Clase interna para representar un "Ítem" (Actor) en el problema.
-     * Incluye el ratio valor/costo para ordenar.
-     */
+    //Clase interna para representar un Ítem (persona) en el problema.
+    //Incluye el ratio valor/costo para ordenar.
+
     private static class Item {
         int value;
         int cost;
         String name;
-        double ratio; // value / cost
+        double ratio; // valor / costo
 
         Item(int value, int cost, String name) {
             this.value = value;
@@ -30,14 +29,12 @@ public class BranchAndBound {
         }
     }
 
-    /**
-     * Clase interna para representar un "Nodo" en el árbol de decisión.
-     */
+    //Clase interna para representar un nodo en el árbol de decisión.
     private static class Node {
-        int level; // Nivel del ítem que estamos considerando
-        int currentValue; // Valor acumulado hasta ahora
-        int currentCost; // Costo acumulado hasta ahora
-        double upperBound; // Estimación (límite superior) del valor máximo
+        int level; 
+        int currentValue; 
+        int currentCost; 
+        double upperBound; 
         List<String> selected; // Actores seleccionados en este camino
 
         Node(int level, int currentValue, int currentCost, List<String> selected) {
@@ -48,9 +45,7 @@ public class BranchAndBound {
         }
     }
 
-    /**
-     * Función principal que resuelve el problema de la mochila con B&B.
-     */
+    //Función principal 
     public static Map<String, Object> solveKnapsack(List<PersonEntity> people, int maxCost) {
         
         List<Item> items = new ArrayList<>();
@@ -71,7 +66,7 @@ public class BranchAndBound {
 
         int n = items.size();
         
-        // 3. Inicializar la cola de prioridad (Max-Heap)
+        // 3. Inicializa la cola de prioridad 
         // Ordena los nodos a explorar por su 'upperBound' (el más prometedor primero)
         PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingDouble(node -> -node.upperBound));
 
@@ -83,7 +78,7 @@ public class BranchAndBound {
         int maxTotalValue = 0;
         List<String> bestSelection = new ArrayList<>();
 
-        // 5. Iniciar la exploración (B&B)
+        // 5. Iniciar la exploración 
         while (!queue.isEmpty()) {
             Node v = queue.poll(); // Saca el nodo más prometedor
 
@@ -92,15 +87,15 @@ public class BranchAndBound {
                 continue; // Podar esta rama
             }
 
-            // Mover al siguiente nivel (siguiente ítem)
+            // Mover al siguiente nivel 
             int nextLevel = v.level + 1;
             if (nextLevel >= n) {
-                continue; // Llegamos al final de esta rama
+                continue; // final de esta rama
             }
 
             Item item = items.get(nextLevel);
 
-            // --- CASO 1: "SÍ tomar el ítem" ---
+            // CASO 1: si tomar el ítem
             // Solo si podemos pagarlo
             if (v.currentCost + item.cost <= maxCost) {
                 List<String> selectedWith = new ArrayList<>(v.selected);
@@ -127,7 +122,7 @@ public class BranchAndBound {
                 }
             }
 
-            // --- CASO 2: "NO tomar el ítem" ---
+            // CASO 2: no tomar el ítem
             Node withoutItem = new Node(
                 nextLevel,
                 v.currentValue, // El valor no cambia
@@ -137,7 +132,7 @@ public class BranchAndBound {
             
             withoutItem.upperBound = calculateUpperBound(withoutItem, items, maxCost);
 
-            // Si la estimación de esta rama (sin el ítem) es buena, la exploramos
+            // Si la estimación de esta rama es buena, la exploramos
             if (withoutItem.upperBound > maxTotalValue) {
                 queue.add(withoutItem);
             }
@@ -150,24 +145,23 @@ public class BranchAndBound {
         return result;
     }
 
-    /**
-     * Calcula el "Upper Bound" (límite superior) para un nodo.
-     * Esta es la estimación optimista.
-     */
+    //Calcula el límite superior para un nodo.
+    //Esta es la estimación optimista.
+     
     private static double calculateUpperBound(Node node, List<Item> items, int maxCost) {
         int n = items.size();
         int remainingCost = maxCost - node.currentCost;
         double bound = node.currentValue;
         int level = node.level + 1;
 
-        // Llenar la capacidad restante con los siguientes ítems
+        // Llena la capacidad restante con los siguientes ítems
         while (level < n && items.get(level).cost <= remainingCost) {
             remainingCost -= items.get(level).cost;
             bound += items.get(level).value;
             level++;
         }
 
-        // Si aún queda espacio, añadir una FRACCIÓN del siguiente ítem
+        // Si queda espacio, se añade una fraccion del siguiente ítem
         if (level < n && remainingCost > 0) {
             bound += (items.get(level).ratio * remainingCost);
         }

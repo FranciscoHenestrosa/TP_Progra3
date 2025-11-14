@@ -113,10 +113,10 @@ public class PersonController {
     ) {
         return buildGraph()
                 .flatMap(graph -> Mono.fromCallable(() -> {
-                            // 1. Llama al algoritmo bloqueante
+                            
                             List<List<String>> paths = BacktrackingDFS.findAllPaths(graph, name1, name2);
 
-                            // 2. Prepara la respuesta
+                            
                             Map<String, Object> result = new HashMap<>();
                             result.put("from", name1);
                             result.put("to", name2);
@@ -124,21 +124,21 @@ public class PersonController {
                             result.put("paths", paths);
                             return result;
                         })
-                        .subscribeOn(Schedulers.boundedElastic()) // 3. Lo ejecuta en un hilo separado
+                        .subscribeOn(Schedulers.boundedElastic()) 
                 );
     }
 
     @GetMapping("/knapsack")
     public Mono<Map<String, Object>> getKnapsackSolution(
-            @RequestParam int maxCost // Ej. maxCost=150
+            @RequestParam int maxCost 
     ) {
-        // 1. Obtenemos la lista de todas las personas (con sus relaciones cargadas)
+        
         return repository.findAllPeople().collectList()
                 .flatMap(people -> Mono.fromCallable(() -> {
-                            // 2. Ejecutamos el algoritmo bloqueante de PD
+                            
                             return DynamicProgramming.solveKnapsack(people, maxCost);
                         })
-                        .subscribeOn(Schedulers.boundedElastic()) // 3. En un hilo separado
+                        .subscribeOn(Schedulers.boundedElastic()) /
                 );
     }
 
@@ -148,10 +148,10 @@ public class PersonController {
     ) {
         return repository.findAllPeople().collectList()
                 .flatMap(people -> Mono.fromCallable(() -> {
-                            // 1. Llama al nuevo algoritmo
+                            
                             return BranchAndBound.solveKnapsack(people, maxCost);
                         })
-                        .subscribeOn(Schedulers.boundedElastic()) // 2. En un hilo separado
+                        .subscribeOn(Schedulers.boundedElastic()) 
                 );
     }
 }

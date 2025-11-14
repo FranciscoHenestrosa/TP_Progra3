@@ -13,10 +13,6 @@ public interface PersonRepository extends ReactiveNeo4jRepository<PersonEntity, 
 
     Mono<PersonEntity> findByName(String name);
 
-    // <-- ¡ESTA ES LA CONSULTA CORRECTA!
-    // Esta consulta le dice a Spring Data Neo4j que cargue la entidad (p)
-    // y todas las relaciones y nodos relacionados que necesita para "armar"
-    // los campos @Relationship (movies y coActors) en la entidad.
     @Query("""
         MATCH (p:Person)
         OPTIONAL MATCH (p)-[r_acted:ACTED_IN]->(m:Movie)
@@ -25,7 +21,7 @@ public interface PersonRepository extends ReactiveNeo4jRepository<PersonEntity, 
     """)
     Flux<PersonEntity> findAllPeople();
 
-    // Esta consulta para las conexiones está bien.
+
     @Query("""
         MATCH (p1:Person)-[r:CO_ACTED_WITH]->(p2:Person)
         RETURN p1.name AS from, p2.name AS to, r.weight AS weight
